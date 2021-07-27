@@ -11,27 +11,30 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "networking/httpRequest.h"
+
 // https://www.binarytides.com/receive-full-data-with-recv-socket-function-in-c/
 // https://dev-notes.eu/2018/06/http-server-in-c/
 
 #define CHUNK_SIZE 512
 #define BACKLOG 10 // Passed to listen()
+#define PORT 8003
 
 #define RESPONSE_200 "HTTP/1.1 200 OK\r\n\n"
 
 void report(struct sockaddr_in *serverAddress);
-int receiveBasic(int clientSocket);
+int receiveBasic(int socket, char *receivedData);
 
 char *copyString(char *src)
 {
-    char *copied = (char *)malloc(strlen(src) * sizeof(char));
+    char *copied = (char *)calloc(strlen(src), sizeof(char));
     strcat(copied, src);
     return copied;
 }
 
 char *copyAndExpand(char *src, char *expand)
 {
-    char *copied = (char *)malloc((strlen(src) + strlen(expand)) * sizeof(char));
+    char *copied = (char *)calloc(strlen(src) + strlen(expand), sizeof(char));
     strncpy(copied, src, strlen(src));
     return copied;
 }
@@ -85,13 +88,12 @@ char *getPublicPath(char *execPath)
 
 int main(int argc, char *argv[])
 {
-    char *pathResources = getPublicPath(argv[0]);
-    // Make
-    // ./server/dist/program
+    struct httpRequest test = new_httpRequest("POST");
+    printf("%d", test.method);
 
-    // Debug
-    // /Users/Abobus/Projects/Polygons/server-si/server/dist/main
-    char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n"; // RESPONSE_200;
+    char *pathResources = getPublicPath(argv[0]);
+
+    char httpHeader[8000] = RESPONSE_200;
 
     // Socket setup: creates an endpoint for communication, returns a descriptor
     int serverSocket = socket(
@@ -103,7 +105,7 @@ int main(int argc, char *argv[])
     // Construct local address structure
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(8003);
+    serverAddress.sin_port = htons(PORT);
     serverAddress.sin_addr.s_addr = htonl(INADDR_LOOPBACK); //inet_addr("127.0.0.1");
 
     // Bind socket to local address
@@ -130,22 +132,30 @@ int main(int argc, char *argv[])
     int clientSocket;
     char recvChar;
 
+    // TODO: think about how to allocate memory more expediently
+    char data[4096];
+
     // Wait for a connection, create a connected socket if a connection is pending
     while (1)
     {
         clientSocket = accept(serverSocket, NULL, NULL);
-        printf("kek");
         send(clientSocket, httpHeader, sizeof(httpHeader), 0);
-        receiveBasic(clientSocket);
+        receiveBasic(clientSocket, data);
+
+        printf("%s", data);
+
         close(clientSocket);
     }
 
     return 0;
 }
 
-int receiveBasic(int socket)
+int receiveBasic(int socket, char *receivedData)
 {
-    int receivedSize, totalSize = 0;
+    int receivedSize = 0;
+    int totalSize = 0;
+    int chunkOffset = 0;
+
     char chunk[CHUNK_SIZE];
 
     // Data is received by chunks, for this you need to use an infinite loop
@@ -157,9 +167,12 @@ int receiveBasic(int socket)
         // The function returns the number of bytes received
         // or -1 in case of error
         receivedSize = recv(socket, chunk, CHUNK_SIZE, 0);
-
         if (receivedSize <= 0)
             return totalSize;
+
+        // Merging all chunks
+        memmove(receivedData + chunkOffset, chunk, CHUNK_SIZE);
+        chunkOffset += CHUNK_SIZE;
 
         totalSize += receivedSize;
 
