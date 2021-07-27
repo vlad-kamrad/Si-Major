@@ -13,9 +13,6 @@
 
 #include "networking/httpRequest.h"
 
-// https://www.binarytides.com/receive-full-data-with-recv-socket-function-in-c/
-// https://dev-notes.eu/2018/06/http-server-in-c/
-
 #define CHUNK_SIZE 512
 #define BACKLOG 10 // Passed to listen()
 #define PORT 8003

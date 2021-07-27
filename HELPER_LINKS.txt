@@ -1,0 +1,11 @@
+https://www.binarytides.com/receive-full-data-with-recv-socket-function-in-c/
+
+https://dev-notes.eu/2018/06/http-server-in-c/
+
+https://github.com/ericomeehan/libeom/blob/main/Networking/Nodes/HTTPServer.c
+
+http://www.lib.ru/WEBMASTER/rfc2068/
+
+http://apachedev.ru/images/amp_2_1/2_5_http_request_response_message.gif
+
+https://clc-wiki.net/wiki/C_standard_library:string.h:memmove
