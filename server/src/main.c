@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 
 #include "networking/httpRequest.h"
+#include "collections/dictionary.h"
 
 #define CHUNK_SIZE 512
 #define BACKLOG 10 // Passed to listen()
@@ -87,6 +88,13 @@ int main(int argc, char *argv[])
 {
     struct httpRequest test = new_httpRequest("POST");
     printf("%d", test.method);
+
+    struct Dictionary dic = new_Dictionary();
+    dictAdd(&dic, "k", "value K");
+    dictAdd(&dic, "f", "value F");
+
+    printf("\n[%s]", dictGet(&dic, "f"));
+    printf("key : %s, val = %s", dic.items[0].key, dic.items[0].value);
 
     char *pathResources = getPublicPath(argv[0]);
 

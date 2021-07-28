@@ -18,7 +18,7 @@ enum httpMethods getHttpMethod(char *methodString)
 {
     for (unsigned short i = 0; i < 9; i++)
     {
-        if (strcmp(methodString, methods[i]) == 0)
+        if (!strcmp(methodString, methods[i]))
             return i;
     }
 
