@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     char recvChar;
 
     // TODO: think about how to allocate memory more expediently
-    char data[4096];
+    char data[65536]; // 64K
 
     // Wait for a connection, create a connected socket if a connection is pending
     while (1)
