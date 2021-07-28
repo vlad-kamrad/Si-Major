@@ -10,6 +10,7 @@ struct httpRequest new_httpRequest(char *request)
     struct httpRequest instance;
 
     instance.method = getHttpMethod(request);
+    instance.headers = new_Dictionary();
 
     return instance;
 }
@@ -17,10 +18,8 @@ struct httpRequest new_httpRequest(char *request)
 enum httpMethods getHttpMethod(char *methodString)
 {
     for (unsigned short i = 0; i < 9; i++)
-    {
         if (!strcmp(methodString, methods[i]))
             return i;
-    }
 
-    return 0;
+    return GET;
 }

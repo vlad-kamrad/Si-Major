@@ -1,3 +1,5 @@
+#include "../collections/dictionary.h"
+
 #ifndef httpRequest_h
 #define httpRequest_h
 
@@ -20,6 +22,7 @@ struct httpRequest
     enum httpMethods method;
     char *uri;
     char *httpVersion;
+    struct Dictionary headers;
 };
 
 struct httpRequest new_httpRequest(char *request);
