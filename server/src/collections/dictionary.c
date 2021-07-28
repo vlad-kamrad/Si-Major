@@ -14,13 +14,7 @@ struct Dictionary new_Dictionary()
 
 void free_Dictionary(struct Dictionary *instance)
 {
-    for (int i = 0; i < instance->count; i++)
-    {
-        free(instance->items[i].key);
-        free(instance->items[i].value);
-    }
-
-    free(instance);
+    // TODO: Implement this
 }
 
 void relocateMemory(struct Dictionary *instance, int newCountItems)
@@ -31,7 +25,6 @@ void relocateMemory(struct Dictionary *instance, int newCountItems)
 void dictAddItem(struct Dictionary *instance, struct DictionaryItem item)
 {
     relocateMemory(instance, instance->count + 1);
-
     instance->items[instance->count] = item;
     instance->count++;
 }
