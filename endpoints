@@ -1,0 +1,11 @@
+endpoints=/,/index,/index.html
+path=/index.html
+isDynamic=1
+
+endpoints=/favicon.ico
+path=/favicon.ico
+isDynamic=0
+
+endpoints=/texttester
+path=/simpletext.txt
+isDynamic=1

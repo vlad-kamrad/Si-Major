@@ -13,6 +13,9 @@
 
 #include "networking/httpRequest.h"
 #include "collections/dictionary.h"
+#include "file/file.h"
+#include "utils/utils.h"
+#include "utils/configWrapper.h"
 
 #define CHUNK_SIZE 512
 #define BACKLOG 10 // Passed to listen()
@@ -26,7 +29,8 @@ int receiveBasic(int socket, char *receivedData);
 char *copyString(char *src)
 {
     char *copied = (char *)calloc(strlen(src), sizeof(char));
-    strcat(copied, src);
+    //strcat(copied, src);
+    memmove(copied, src, strlen(src));
     return copied;
 }
 
@@ -84,19 +88,46 @@ char *getPublicPath(char *execPath)
     return copied;
 }
 
+char *getRoot(char *source)
+{
+    char *cp = copyString(source);
+    int size = strstr(cp, "/server") - cp;
+    char *root = (char *)calloc(size, sizeof(char));
+    memmove(root, cp, size);
+    free(cp);
+    return root;
+}
+
+char *getEndpointsPath(char *root)
+{
+    char *endpoints = "/endpoints";
+    return copyAndAppend(root, endpoints);
+}
+
 int main(int argc, char *argv[])
 {
-    char *input = "POST /abobus HTTP/1.1\r\nAuthorization: Bearer token_\r\nContent-Type: application/json\r\nUser-Agent: PostmanRuntime/7.26.8\r\nAccept: */*\r\nPostman-Token: c4daa1d9-1bbc-4354-82ea-d888d6f971f0\r\nHost: 127.0.0.1:8003\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nContent-Length: 27\r\n\r\n{\n    \"nickname\": \"admin\"\n}"; 
-    
-    struct httpRequest test = new_httpRequest(input);
+    char *rootRoot = getRoot(argv[0]);
+    char *endpointsPath = getEndpointsPath(rootRoot);
+    char *pathResources = getPublicPath(argv[0]);
+
+    char *input = "POST /abobus HTTP/1.1\r\nAuthorization: Bearer token_\r\nContent-Type: application/json\r\nUser-Agent: PostmanRuntime/7.26.8\r\nAccept: */*\r\nPostman-Token: c4daa1d9-1bbc-4354-82ea-d888d6f971f0\r\nHost: 127.0.0.1:8003\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nContent-Length: 27\r\n\r\n{\n    \"nickname\": \"admin\"\n}";
+
+    //char *output = readFile(pathToConfigFile, getFileSize(pathToConfigFile));
+
+    //char *JSON = "{\n  \"allowFiles\": [\n    {\n      \"endpoints\": [\"/\", \"/index\", \"/index.html\"],\n      \"path\": \"/index.html\",\n      \"isDynamic\": true\n    },\n    {\n      \"endpoints\": [\"/favicon.ico\"],\n      \"path\": \"/favicon.ico\",\n      \"isDynamic\": false\n    }\n  ],\n  \"chunkSize\": 65536\n}\n";
+
+    //char *abobus = copyAndAppend(pathResources, "/index.html");
+    //strcat(pathResources, "/index.html");
+    //char *abob = "/Users/vladislavstupaev/Projects/Si-Major/public/index.html";
+    //int size = getFileSize(abobus);
+    //printf("[ %d ]", size);
+    /* struct httpRequest test = new_httpRequest(input);
 
     for (int i = 0; i < test.headers.count; i++)
     {
         printf("[%s] : [%s]\n", test.headers.items[i].key, test.headers.items[i].value);
     }
-    
-    char *pathResources = getPublicPath(argv[0]);
-
+ */
     char httpHeader[8000] = RESPONSE_200;
 
     // Socket setup: creates an endpoint for communication, returns a descriptor

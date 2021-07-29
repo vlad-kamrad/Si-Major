@@ -1,14 +1,15 @@
 {
-  "paths": [
+  "allowFiles": [
     {
-      "type": "page",
-      "endpoints": ["/", "index", "index.html"],
-      "path": "index.html"
+      "endpoints": ["/", "/index", "/index.html"],
+      "path": "/inde     x.html",
+      "isDynamic": true
     },
     {
-      "type": "favicon",
-      "endpoints": ["favicon.ico"],
-      "path": "favicon.ico"
+      "endpoints": ["/favicon.ico"],
+      "path": "/favicon.ico",
+      "isDynamic": false
     }
-  ]
+  ],
+  "chunkSize": 65536
 }
