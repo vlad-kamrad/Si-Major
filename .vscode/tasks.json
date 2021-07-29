@@ -11,6 +11,7 @@
                 "${fileDirname}/../dist/${fileBasenameNoExtension}",
                 "${fileDirname}/networking/httpRequest.c",
                 "${fileDirname}/collections/dictionary.c",
+                "${fileDirname}/collections/array.c",
                 "${fileDirname}/file/file.c",
                 "${fileDirname}/utils/utils.c",
                 "${fileDirname}/utils/configWrapper.c",

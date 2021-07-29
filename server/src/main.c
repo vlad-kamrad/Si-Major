@@ -17,6 +17,7 @@
 #include "utils/utils.h"
 #include "utils/configWrapper.h"
 
+#define RECV_DATA_BUFFER_SIZE 65536
 #define CHUNK_SIZE 512
 #define BACKLOG 10 // Passed to listen()
 #define PORT 8003
@@ -150,16 +151,16 @@ int main(int argc, char *argv[])
     char recvChar;
 
     // TODO: think about how to allocate memory more expediently
-    char data[65536]; // 64K
+    char receiveDataBuffer[RECV_DATA_BUFFER_SIZE]; // 64K
 
     // Wait for a connection, create a connected socket if a connection is pending
     while (1)
     {
         clientSocket = accept(serverSocket, NULL, NULL);
         send(clientSocket, httpHeader, sizeof(httpHeader), 0);
-        receiveBasic(clientSocket, data);
+        receiveBasic(clientSocket, receiveDataBuffer);
 
-        printf("%s", data);
+        printf("%s", receiveDataBuffer);
 
         close(clientSocket);
     }
