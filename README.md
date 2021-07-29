@@ -21,3 +21,4 @@ A simple web server written in C
 
 - Base implementation
 - Investigate multi routes
+- Implement header parser
