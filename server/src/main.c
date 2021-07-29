@@ -86,16 +86,15 @@ char *getPublicPath(char *execPath)
 
 int main(int argc, char *argv[])
 {
-    struct httpRequest test = new_httpRequest("POST");
-    printf("%d", test.method);
+    char *input = "POST /abobus HTTP/1.1\r\nAuthorization: Bearer token_\r\nContent-Type: application/json\r\nUser-Agent: PostmanRuntime/7.26.8\r\nAccept: */*\r\nPostman-Token: c4daa1d9-1bbc-4354-82ea-d888d6f971f0\r\nHost: 127.0.0.1:8003\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: keep-alive\r\nContent-Length: 27\r\n\r\n{\n    \"nickname\": \"admin\"\n}"; 
+    
+    struct httpRequest test = new_httpRequest(input);
 
-    struct Dictionary dic = new_Dictionary();
-    dictAdd(&dic, "k", "value K");
-    dictAdd(&dic, "f", "value F");
-
-    printf("\n[%s]", dictGet(&dic, "f"));
-    printf("key : %s, val = %s", dic.items[0].key, dic.items[0].value);
-
+    for (int i = 0; i < test.headers.count; i++)
+    {
+        printf("[%s] : [%s]\n", test.headers.items[i].key, test.headers.items[i].value);
+    }
+    
     char *pathResources = getPublicPath(argv[0]);
 
     char httpHeader[8000] = RESPONSE_200;

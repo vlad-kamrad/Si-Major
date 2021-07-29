@@ -7,6 +7,7 @@ A simple web server written in C
 - Investigate/Implement .env file
 - Implement multi route for get requests
 - Write config parser for configure multiple resources
+- Add json parser
 - Write 404 Page
 - Check with load testing
 - Implement POST requests (pre web api)
