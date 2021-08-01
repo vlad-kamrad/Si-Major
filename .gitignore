@@ -1,4 +1,5 @@
-*/dist/*
+dist/*
+dist/main
 
 .DS_Store
 
