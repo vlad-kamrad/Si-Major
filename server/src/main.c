@@ -151,6 +151,11 @@ int main(int argc, char *argv[])
     char *endpointsData = readFile(endpointsPath, getFileSize(endpointsPath), &isSuccess);
     char *block = strtok(endpointsData, sep);
 
+    if (!isSuccess) {
+        // TODO: Write more
+        printf("Error when reading file from endpoints.\n");
+    }
+
     while (block != NULL)
     {
         char *filePath = copyAndAppend(pathResources, strtok(NULL, sep));

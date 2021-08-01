@@ -1,5 +1,5 @@
 const out = document.querySelector("span");
-let text = ["🅰️", "🅱️", "🅾️", "🅱️", "🅰️"];
+const text = ["😂", "😇", "🥳", "😱", "👻"];
 
 setInterval(() => {
   const _ = text.shift();
