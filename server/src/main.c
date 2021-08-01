@@ -16,13 +16,16 @@
 #include "file/file.h"
 #include "utils/utils.h"
 #include "utils/configWrapper.h"
+#include "file/endpoint.h"
 
 #define RECV_DATA_BUFFER_SIZE 65536
 #define CHUNK_SIZE 512
 #define BACKLOG 10 // Passed to listen()
 #define PORT 8003
+#define MAX_ENDPOINTS 50
 
 #define RESPONSE_200 "HTTP/1.1 200 OK\r\n\n"
+#define RESPONSE_404 "HTTP/1.1 404 Not Found\r\n\n"
 
 void report(struct sockaddr_in *serverAddress);
 int receiveBasic(int socket, char *receivedData);
@@ -105,11 +108,58 @@ char *getEndpointsPath(char *root)
     return copyAndAppend(root, endpoints);
 }
 
+char *getFileByEndpoint(char *fileLocation, int fileSize)
+{
+    int isSuccess = 0;
+    char *data = readFile(fileLocation, fileSize, &isSuccess);
+
+    if (isSuccess == 0)
+    {
+        printf("File %s is not exist", fileLocation);
+        return NULL;
+    }
+
+    // RESPONSE_200 + data
+    char *res = (char *)calloc(strlen(RESPONSE_200) + fileSize, sizeof(char));
+
+    // TODO: Change this ugly code
+    for (int i = 0; i < strlen(RESPONSE_200); i++)
+    {
+        res[i] = RESPONSE_200[i];
+    }
+
+    for (int i = strlen(RESPONSE_200), j = 0; j < fileSize; i++, j++)
+    {
+        res[i] = data[j];
+    }
+
+    return res;
+}
+
 int main(int argc, char *argv[])
 {
     char *rootRoot = getRoot(argv[0]);
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);
+
+    // INIT FILES ENDPOINTS
+    struct Endpoint endpoints[MAX_ENDPOINTS];
+    int endpointCount = 0;
+
+    char *sep = "\n";
+    int isSuccess = 0;
+    char *endpointsData = readFile(endpointsPath, getFileSize(endpointsPath), &isSuccess);
+    char *block = strtok(endpointsData, sep);
+
+    while (block != NULL)
+    {
+        char *filePath = copyAndAppend(pathResources, strtok(NULL, sep));
+        int isDynRead = str2int(strtok(NULL, sep));
+        endpoints[endpointCount++] = new_Endpoint(block, filePath, isDynRead);
+        block = strtok(NULL, sep);
+    }
+
+    // END INIT FILES ENDPOINTS
 
     char httpHeader[8000] = RESPONSE_200;
 
@@ -145,23 +195,54 @@ int main(int argc, char *argv[])
 
     report(&serverAddress); // Custom report function
 
-    setHttpHeader(httpHeader, pathResources); // Custom function to set header
+    //setHttpHeader(httpHeader, pathResources); // Custom function to set header
 
     int clientSocket;
-    char recvChar;
 
     // TODO: think about how to allocate memory more expediently
-    char receiveDataBuffer[RECV_DATA_BUFFER_SIZE]; // 64K
+    char receiveDataBuffer[RECV_DATA_BUFFER_SIZE];
+
+    for (int i = 0; i < endpointCount; i++)
+    {
+        endpoints[i].fileSize = getFileSize(endpoints[i].path);
+    }
 
     // Wait for a connection, create a connected socket if a connection is pending
     while (1)
     {
         clientSocket = accept(serverSocket, NULL, NULL);
-        send(clientSocket, httpHeader, sizeof(httpHeader), 0);
-        receiveBasic(clientSocket, receiveDataBuffer);
+        int totalSize = receiveBasic(clientSocket, receiveDataBuffer);
 
-        printf("%s", receiveDataBuffer);
+        if (totalSize <= 0)
+            continue;
 
+        struct httpRequest req = new_httpRequest(receiveDataBuffer);
+
+        // printf("%s", receiveDataBuffer);
+        memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
+
+        for (int i = 0; i < endpointCount; i++)
+        {
+            if (!strcmp(endpoints[i].endpointStr, req.uri))
+            {
+                char *response = getFileByEndpoint(endpoints[i].path, endpoints[i].fileSize);
+
+                send(clientSocket, response, strlen(response), 0);
+                free(response);
+                free(req.headers.items);
+
+                break;
+            }
+            else
+            {
+                if (i == endpointCount - 1) {
+                    printf("[ Not Found ]\n");
+                    send(clientSocket, RESPONSE_404, strlen(RESPONSE_404), 0);
+                }
+            }
+        }
+
+        //send(clientSocket, httpHeader, sizeof(httpHeader), 0);
         close(clientSocket);
     }
 

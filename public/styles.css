@@ -1,0 +1,9 @@
+body {
+  height: 100vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+span {
+  font-size: xxx-large;
+}

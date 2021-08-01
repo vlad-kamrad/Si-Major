@@ -15,6 +15,7 @@
                 "${fileDirname}/file/file.c",
                 "${fileDirname}/utils/utils.c",
                 "${fileDirname}/utils/configWrapper.c",
+                "${fileDirname}/file/endpoint.c",
             ],
             "options": {
                 "cwd": "${fileDirname}"

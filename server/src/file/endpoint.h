@@ -1,17 +1,15 @@
-#include "../collections/array.h"
-
 #ifndef endpoint_h
 #define endpoint_h
 
 struct Endpoint
 {
     char *path;
+    char *endpointStr;
     int isDynamicRead;
-    struct Array endpoints;
+    int fileSize;
 };
 
-struct Endpoint new_Endpoint();
-void free_Endpoint(struct Dictionary *instance);
-int isContainsUri(char *uri);
+struct Endpoint new_Endpoint(char *endpointStr, char *path, int isDynamicRead);
+void free_Endpoint(struct Endpoint *instance);
 
 #endif /* endpoint_h */

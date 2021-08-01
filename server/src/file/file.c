@@ -4,14 +4,15 @@
 
 const char *errorReadFileString = "[ Error while opening the file ]\n";
 
-char *readFile(char *fileLocation, int fileSize)
+char *readFile(char *fileLocation, int fileSize, int *isSuccess)
 {
     FILE *file = fopen(fileLocation, "r");
 
     if (file == NULL)
     {
         printf("%s", errorReadFileString);
-        exit(1);
+        isSuccess = 0;
+        return NULL;
     }
 
     char *output = (char *)calloc(fileSize, sizeof(char));
@@ -25,6 +26,8 @@ char *readFile(char *fileLocation, int fileSize)
     }
 
     fclose(file);
+    (*isSuccess) = 1;
+
     return output;
 }
 
@@ -34,7 +37,7 @@ int getFileSize(char *fileLocation)
     if (file == NULL)
     {
         printf("%s", errorReadFileString);
-        exit(1);
+        return 0;
     }
 
     fseek(file, 0L, SEEK_END);

@@ -4,6 +4,6 @@
 #define file_h
 
 int getFileSize(char *fileLocation);
-char* readFile(char *fileLocation, int fileSize);
+char *readFile(char *fileLocation, int fileSize, int *isSuccess);
 
 #endif /* file_h */

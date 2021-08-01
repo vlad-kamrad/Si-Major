@@ -1,25 +1,28 @@
 #include <stdlib.h>
 #include <string.h>
+#include "../collections/array.h"
 #include "endpoint.h"
 
-struct Endpoint new_Endpoint()
+struct Endpoint new_Endpoint(char *endpointStr, char *path, int isDynamicRead)
 {
+    int pathSize = strlen(path);
+    int endpointStrSize = strlen(endpointStr);
+
     struct Endpoint instance;
 
-    instance.endpoints = new_Array();
-    instance.isDynamicRead = 0;
-    instance.path = malloc(0);
+    instance.path = (char *)calloc(pathSize, sizeof(char));
+    memmove(instance.path, path, pathSize);
+
+    instance.endpointStr = (char *)calloc(endpointStrSize, sizeof(char));
+    memmove(instance.endpointStr, endpointStr, endpointStrSize);
+
+    instance.isDynamicRead = isDynamicRead;
 
     return instance;
 }
 
-int isContainsUri(struct Endpoint *instance, char *uri)
+void free_Endpoint(struct Endpoint *instance)
 {
-    for (int i = 0; i < instance->endpoints.count; i++)
-    {
-        if (!strcmp(instance->endpoints.item[i], uri))
-            return 1;
-    }
-
-    return 0;
+    free(instance->endpointStr);
+    free(instance->path);
 }

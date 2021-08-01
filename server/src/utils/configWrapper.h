@@ -14,7 +14,7 @@ struct ConfigFile
     int chunkSize;
 };
 
-struct ConfigFile new_OpenConfigFile(char *pathToConfigFile);
+struct ConfigFile new_OpenConfigFile(char *pathToConfigFile, int *isSuccess);
 struct ConfigFile new_ReadConfigFile(char *filedata);
 
 struct AllowFileProps new_AllowFileProps();

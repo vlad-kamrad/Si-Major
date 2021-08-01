@@ -3,28 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
-    <style>
-      body {
-        height: 100vh;
-        display: grid;
-        justify-content: center;
-        align-content: center;
-      }
-      span {
-        font-size: xxx-large;
-      }
-    </style>
+    <script src="./index.js" defer></script>
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <span>🅰️ 🅱️ 🅾️ 🅱️ 🅰️</span>
-    <script>
-      const out = document.querySelector("span");
-      let text = ["🅰️", "🅱️", "🅾️", "🅱️", "🅰️"];
-      setInterval(() => {
-        const _ = text.shift();
-        text.push(_);
-        out.textContent = text.join(" ");
-      }, 750);
-    </script>
   </body>
 </html>

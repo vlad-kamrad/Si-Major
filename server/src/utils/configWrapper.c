@@ -25,10 +25,10 @@ struct AllowFileProps new_AllowFileProps()
     return instance;
 }
 
-struct ConfigFile new_OpenConfigFile(char *pathToConfigFile)
+struct ConfigFile new_OpenConfigFile(char *pathToConfigFile, int *isSuccess)
 {
     int configFileSize = getFileSize(pathToConfigFile);
-    char *output = readFile(pathToConfigFile, configFileSize);
+    char *output = readFile(pathToConfigFile, configFileSize, isSuccess);
     char *cleared = removeUnnecessary(output, configFileSize);
 
     free(output);
