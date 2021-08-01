@@ -1,8 +1,1 @@
-const out = document.querySelector("span");
-const text = ["😂", "😇", "🥳", "😱", "👻"];
-
-setInterval(() => {
-  const _ = text.pop();
-  text.unshift(_);
-  out.textContent = text.join(" ");
-}, 3000);
+const out=document.querySelector("span"),text=["😂","😇","🥳","😱","👻"];setInterval(()=>{const t=text.pop();text.unshift(t),out.textContent=text.join(" ")},3e3);
