@@ -5,8 +5,6 @@ A simple web server written in C
 ### TODO
 
 - Investigate/Implement .env file
-- Implement multi route for get requests
-- Write config parser for configure multiple resources
 - Add json parser
 - Write 404 Page
 - Check with load testing
@@ -22,3 +20,5 @@ A simple web server written in C
 - Base implementation
 - Investigate multi routes
 - Implement header parser
+- Implement multi route for get requests
+- Write config parser for configure multiple resources
