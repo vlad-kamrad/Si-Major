@@ -1,5 +1,6 @@
-*/dist/*
+**/dist/*
 
+!**/dist/tree.txt
 
 .DS_Store
 

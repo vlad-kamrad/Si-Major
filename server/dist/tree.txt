@@ -1,0 +1,11 @@
+├── configuration
+├── endpoints
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── index.js
+│   ├── simpletext.txt
+│   └── styles.css
+└── server
+    └── dist
+        └── program
