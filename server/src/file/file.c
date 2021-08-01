@@ -40,9 +40,16 @@ int getFileSize(char *fileLocation)
         return 0;
     }
 
-    fseek(file, 0L, SEEK_END);
-    int fileSize = ftell(file);
-    fseek(file, 0L, SEEK_SET);
+    // This realization don't support for my target platform
+    // fseek(file, 0L, SEEK_END);
+    // int fileSize = ftell(file);
+    // fseek(file, 0L, SEEK_SET);
+
+    int fileSize = 0;
+    char ch;
+
+    while ((ch = fgetc(file)) != EOF)
+        fileSize++;
 
     fclose(file);
 

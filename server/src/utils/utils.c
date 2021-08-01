@@ -19,7 +19,7 @@ char *int2str(int number)
 int getPairIndex(char *source, int index, char first, char second)
 {
     int calc = 1;
-    for (unsigned long i = index + 1; i < strlen(source); i++)
+    for (int i = index + 1; i < strlen(source); i++)
     {
         if (source[i] == first)
             calc++;
