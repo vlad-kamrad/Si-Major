@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dictionary.h"
+#include <stdio.h>
 
 struct Dictionary new_Dictionary()
 {
@@ -14,7 +15,7 @@ struct Dictionary new_Dictionary()
 
 void free_Dictionary(struct Dictionary *instance)
 {
-    // TODO: Implement this
+    free(instance->items);
 }
 
 void relocateMemory(struct Dictionary *instance, int newCountItems)
@@ -52,5 +53,6 @@ char *dictGet(struct Dictionary *instance, char *key)
 
 void dictRemove(struct Dictionary *instance, char *key)
 {
+    printf("%d, %s", instance->count, key);
     // TODO: Implement this
 }

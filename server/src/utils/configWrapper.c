@@ -47,8 +47,8 @@ struct ConfigFile new_ReadConfigFile(char *filedata)
 
 void initAllowFileProps(struct ConfigFile *config, char *data)
 {
-    struct AllowFileProps *allowed;
-
+    // struct AllowFileProps *allowed;
+    printf("cof %d", config->chunkSize);
     char *start = strstr(data, allowFilesPattern);
     start += strlen(allowFilesPattern);
 

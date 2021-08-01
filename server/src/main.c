@@ -15,7 +15,6 @@
 #include "collections/dictionary.h"
 #include "file/file.h"
 #include "utils/utils.h"
-#include "utils/configWrapper.h"
 #include "file/endpoint.h"
 
 #define RECV_DATA_BUFFER_SIZE 65536
@@ -53,7 +52,7 @@ char *copyAndAppend(char *src, char *append)
 }
 
 // TODO
-void setHttpHeader(char *httpHeader, char *pathResources)
+/* void setHttpHeader(char *httpHeader, char *pathResources)
 {
     // File object to return
     char *abobus = "/index.html";
@@ -71,7 +70,7 @@ void setHttpHeader(char *httpHeader, char *pathResources)
     // char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n";
     strcat(httpHeader, responseData);
     fclose(htmlData);
-}
+} */
 
 char *getPublicPath(char *execPath)
 {
@@ -123,7 +122,7 @@ char *getFileByEndpoint(char *fileLocation, int fileSize)
     char *res = (char *)calloc(strlen(RESPONSE_200) + fileSize, sizeof(char));
 
     // TODO: Change this ugly code
-    for (int i = 0; i < strlen(RESPONSE_200); i++)
+    for (unsigned long i = 0; i < strlen(RESPONSE_200); i++)
     {
         res[i] = RESPONSE_200[i];
     }
@@ -138,6 +137,7 @@ char *getFileByEndpoint(char *fileLocation, int fileSize)
 
 int main(int argc, char *argv[])
 {
+    argc++;
     char *rootRoot = getRoot(argv[0]);
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 
     // END INIT FILES ENDPOINTS
 
-    char httpHeader[8000] = RESPONSE_200;
+    // char httpHeader[8000] = RESPONSE_200;
 
     // Socket setup: creates an endpoint for communication, returns a descriptor
     int serverSocket = socket(
