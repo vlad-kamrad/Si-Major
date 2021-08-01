@@ -27,4 +27,7 @@ struct httpRequest
 
 struct httpRequest new_httpRequest(char *request);
 
+enum httpMethods getHttpMethod(char *string);
+const char *getHttpMethodByEnum(enum httpMethods method);
+
 #endif /* httpRequest_h */

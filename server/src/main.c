@@ -151,7 +151,8 @@ int main(int argc, char *argv[])
     char *endpointsData = readFile(endpointsPath, getFileSize(endpointsPath), &isSuccess);
     char *block = strtok(endpointsData, sep);
 
-    if (!isSuccess) {
+    if (!isSuccess)
+    {
         // TODO: Write more
         printf("Error when reading file from endpoints.\n");
     }
@@ -223,27 +224,26 @@ int main(int argc, char *argv[])
 
         struct httpRequest req = new_httpRequest(receiveDataBuffer);
 
+        printf("%s\t%s\n", getHttpMethodByEnum(req.method), req.uri);
+
         // printf("%s", receiveDataBuffer);
         memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
 
         for (int i = 0; i < endpointCount; i++)
         {
-            if (!strcmp(endpoints[i].endpointStr, req.uri))
+            if (!strcmp(endpoints[i].endpointStr, req.uri) && req.method == GET)
             {
                 char *response = getFileByEndpoint(endpoints[i].path, endpoints[i].fileSize);
 
                 send(clientSocket, response, strlen(response), 0);
                 free(response);
                 free(req.headers.items);
-
                 break;
             }
-            else
+            else if (i == endpointCount - 1)
             {
-                if (i == endpointCount - 1) {
-                    printf("[ Not Found ]\n");
-                    send(clientSocket, RESPONSE_404, strlen(RESPONSE_404), 0);
-                }
+                printf("[ Not Found]\n");
+                send(clientSocket, RESPONSE_404, strlen(RESPONSE_404), 0);
             }
         }
 

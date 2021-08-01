@@ -8,7 +8,6 @@ const char *httpDoubleDelimiter = "\r\n\r\n";
 const char *headerDelimiter = ": ";
 const char *space = " ";
 
-enum httpMethods getHttpMethod(char *string);
 void parseFirstString(struct httpRequest *instance, char *firstString);
 void parseHeaders(struct httpRequest *instance, char *headers);
 
@@ -69,4 +68,9 @@ enum httpMethods getHttpMethod(char *methodString)
             return i;
 
     return GET;
+}
+
+const char *getHttpMethodByEnum(enum httpMethods method)
+{
+    return methods[method];
 }
