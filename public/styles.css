@@ -27,6 +27,19 @@ h1 i {
 span {
   font-size: 69px;
   text-align: center;
+  animation: emoji-opacity 3s ease-in-out infinite;
+}
+
+@keyframes emoji-opacity {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes italic-color-change {

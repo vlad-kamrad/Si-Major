@@ -2,7 +2,7 @@ const out = document.querySelector("span");
 const text = ["😂", "😇", "🥳", "😱", "👻"];
 
 setInterval(() => {
-  const _ = text.shift();
-  text.push(_);
+  const _ = text.pop();
+  text.unshift(_);
   out.textContent = text.join(" ");
-}, 750);
+}, 3000);
