@@ -165,6 +165,7 @@ int main(int argc, char *argv[])
     }
 
     // END INIT FILES ENDPOINTS
+    printf("Readed [enpdpoints] file\n");
 
     char httpHeader[8000] = RESPONSE_200;
 

@@ -16,14 +16,7 @@ char *readFile(char *fileLocation, int fileSize, int *isSuccess)
     }
 
     char *output = (char *)calloc(fileSize, sizeof(char));
-
-    int index = 0;
-    char ch;
-
-    while ((ch = fgetc(file)) != EOF)
-    {
-        output[index++] = ch;
-    }
+    fread(output, sizeof(char), fileSize, file);
 
     fclose(file);
     (*isSuccess) = 1;
@@ -40,16 +33,9 @@ int getFileSize(char *fileLocation)
         return 0;
     }
 
-    // This realization don't support for my target platform
-    // fseek(file, 0L, SEEK_END);
-    // int fileSize = ftell(file);
-    // fseek(file, 0L, SEEK_SET);
-
-    int fileSize = 0;
-    char ch;
-
-    while ((ch = fgetc(file)) != EOF)
-        fileSize++;
+    fseek(file, 0L, SEEK_END);
+    int fileSize = ftell(file);
+    fseek(file, 0L, SEEK_SET);
 
     fclose(file);
 
