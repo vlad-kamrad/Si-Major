@@ -9,3 +9,5 @@ http://www.lib.ru/WEBMASTER/rfc2068/
 http://apachedev.ru/images/amp_2_1/2_5_http_request_response_message.gif
 
 https://clc-wiki.net/wiki/C_standard_library:string.h:memmove
+
+https://gist.github.com/kassane/f2330ef44b070f4a5fa9d59c770f68e9

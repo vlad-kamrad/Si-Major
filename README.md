@@ -13,7 +13,7 @@ A simple web server written in C
 - Add the ability to make requests
 - Add dynamic allocation memory for headers
 - Cookie reader/writer
-- Event loop aka Node.js
+- Event loop aka Node.js (https://github.com/libuv/libuv)
 
 ### Done
 
