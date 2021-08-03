@@ -213,6 +213,9 @@ int main(int argc, char *argv[])
         endpoints[i].fileSize = getFileSize(endpoints[i].path);
     }
 
+    // Mb use multi threading ?
+    // https://stackoverflow.com/questions/2108961/sample-code-for-asynchronous-programming-in-c?lq=1
+
     // Wait for a connection, create a connected socket if a connection is pending
     while (1)
     {
@@ -233,6 +236,7 @@ int main(int argc, char *argv[])
         {
             if (!strcmp(endpoints[i].endpointStr, req.uri) && req.method == GET)
             {
+                // TODO: Use cache
                 char *response = getFileByEndpoint(endpoints[i].path, endpoints[i].fileSize);
 
                 send(clientSocket, response, strlen(response), 0);
