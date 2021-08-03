@@ -11,6 +11,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <pthread.h>
+
 #include "networking/httpRequest.h"
 #include "collections/dictionary.h"
 #include "file/file.h"
@@ -19,15 +21,24 @@
 
 #define RECV_DATA_BUFFER_SIZE 65536
 #define CHUNK_SIZE 512
-#define BACKLOG 10 // Passed to listen()
+#define BACKLOG 50 // Passed to listen()
 #define PORT 8003
 #define MAX_ENDPOINTS 50
 
 #define RESPONSE_200 "HTTP/1.1 200 OK\r\n\n"
 #define RESPONSE_404 "HTTP/1.1 404 Not Found\r\n\n"
 
+void *reqCallback(void *argument);
 void report(struct sockaddr_in *serverAddress);
 int receiveBasic(int socket, char *receivedData);
+
+typedef struct parameter
+{
+    int socket;
+    struct Endpoint *endpoints;
+    int endpointsCount;
+
+} parameter;
 
 char *copyString(char *src)
 {
@@ -220,42 +231,67 @@ int main(int argc, char *argv[])
     while (1)
     {
         clientSocket = accept(serverSocket, NULL, NULL);
-        int totalSize = receiveBasic(clientSocket, receiveDataBuffer);
 
-        if (totalSize <= 0)
-            continue;
+        parameter *p = malloc(sizeof(parameter));
+        p->socket = clientSocket;
+        p->endpoints = endpoints;
+        p->endpointsCount = endpointCount;
+        pthread_t helper;
+        void *status;
 
-        struct httpRequest req = new_httpRequest(receiveDataBuffer);
-
-        printf("%s\t%s\n", getHttpMethodByEnum(req.method), req.uri);
-
-        // printf("%s", receiveDataBuffer);
-        memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
-
-        for (int i = 0; i < endpointCount; i++)
-        {
-            if (!strcmp(endpoints[i].endpointStr, req.uri) && req.method == GET)
-            {
-                // TODO: Use cache
-                char *response = getFileByEndpoint(endpoints[i].path, endpoints[i].fileSize);
-
-                send(clientSocket, response, strlen(response), 0);
-                free(response);
-                free(req.headers.items);
-                break;
-            }
-            else if (i == endpointCount - 1)
-            {
-                printf("[ Not Found]\n");
-                send(clientSocket, RESPONSE_404, strlen(RESPONSE_404), 0);
-            }
-        }
-
-        //send(clientSocket, httpHeader, sizeof(httpHeader), 0);
-        close(clientSocket);
+        pthread_create(&helper, NULL, reqCallback, p);
     }
 
     return 0;
+}
+
+void *reqCallback(void *argument)
+{
+    char receiveDataBuffer[RECV_DATA_BUFFER_SIZE];
+
+    parameter *p = (parameter *)argument;
+    int clientSocket = p->socket;
+    int endpointCount = p->endpointsCount;
+    struct Endpoint *endpoints = p->endpoints;
+
+    int totalSize = receiveBasic(clientSocket, receiveDataBuffer);
+
+    if (totalSize <= 0)
+    {
+        printf("pthread ABOBA\n");
+        close(clientSocket);
+        pthread_exit(0);
+    }
+
+    struct httpRequest req = new_httpRequest(receiveDataBuffer);
+
+    printf("[ %d ]\t%s\t%s\n", clientSocket, getHttpMethodByEnum(req.method), req.uri);
+
+    // printf("%s", receiveDataBuffer);
+    memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
+
+    for (int i = 0; i < endpointCount; i++)
+    {
+        if (!strcmp(endpoints[i].endpointStr, req.uri) && req.method == GET)
+        {
+            // TODO: Use cache
+            char *response = getFileByEndpoint(endpoints[i].path, endpoints[i].fileSize);
+
+            send(clientSocket, response, strlen(response), 0);
+            free(response);
+            free(req.headers.items);
+            break;
+        }
+        else if (i == endpointCount - 1)
+        {
+            printf("[ Not Found]\n");
+            send(clientSocket, RESPONSE_404, strlen(RESPONSE_404), 0);
+        }
+    }
+
+    //send(clientSocket, httpHeader, sizeof(httpHeader), 0);
+    close(clientSocket);
+    pthread_exit(NULL);
 }
 
 int receiveBasic(int socket, char *receivedData)
