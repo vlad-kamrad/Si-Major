@@ -13,4 +13,6 @@ struct FileMetadata
 
 struct FileMetadata new_FileMetadata();
 
+char *get_MIME_Type(char *extension);
+
 #endif /* utils_h */

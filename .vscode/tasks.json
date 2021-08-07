@@ -14,6 +14,7 @@
                 "${fileDirname}/collections/array.c",
                 "${fileDirname}/file/file.c",
                 "${fileDirname}/utils/utils.c",
+                "${fileDirname}/utils/mimeTypes.c",
                 "${fileDirname}/utils/configWrapper.c",
                 "${fileDirname}/file/endpoint.c",
             ],
