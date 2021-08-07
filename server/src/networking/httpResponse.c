@@ -19,8 +19,6 @@ struct httpResponse new_httpResponse(struct FileObject *fo)
     dictAdd(&instance.headers, "Server", SERVER_NAME);
     dictAdd(&instance.headers, "Content-Type", get_MIME_Type(fo->extension));
 
-    // "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nServer: Si-Major\r\n\n
-
     return instance;
 }
 
@@ -46,7 +44,7 @@ char *build_httpResponse(struct httpResponse *instance)
     if (instance->body == NULL)
         return out;
 
-    strcat(out, "\n");
+    strcat(out, "\r\n");
     strcat(out, instance->body);
 
     return out;

@@ -61,27 +61,6 @@ char *copyAndAppend(char *src, char *append)
     return result;
 }
 
-// TODO
-void setHttpHeader(char *httpHeader, char *pathResources)
-{
-    // File object to return
-    char *abobus = "/index.html";
-    char *fileLocation = copyString(pathResources);
-    strcat(fileLocation, abobus);
-
-    FILE *htmlData = fopen(fileLocation, "r");
-
-    char line[100];
-    char responseData[8000];
-    while (fgets(line, 100, htmlData) != 0)
-    {
-        strcat(responseData, line);
-    }
-    // char httpHeader[8000] = "HTTP/1.1 200 OK\r\n\n";
-    strcat(httpHeader, responseData);
-    fclose(htmlData);
-}
-
 char *getPublicPath(char *execPath)
 {
     char separator = '/';
@@ -117,43 +96,11 @@ char *getEndpointsPath(char *root)
     return copyAndAppend(root, endpoints);
 }
 
-char *getFileByEndpoint(char *fileLocation, int fileSize)
-{
-    int isSuccess = 0;
-    char *data = readFile(fileLocation, fileSize, &isSuccess);
-
-    if (isSuccess == 0)
-    {
-        printf("File %s is not exist", fileLocation);
-        return NULL;
-    }
-
-    // RESPONSE_200 + data
-    char *res = (char *)calloc(strlen(RESPONSE_200) + fileSize, sizeof(char));
-
-    // TODO: Change this ugly code
-    for (int i = 0; i < strlen(RESPONSE_200); i++)
-    {
-        res[i] = RESPONSE_200[i];
-    }
-
-    for (int i = strlen(RESPONSE_200), j = 0; j < fileSize; i++, j++)
-    {
-        res[i] = data[j];
-    }
-
-    return res;
-}
-
 int main(int argc, char *argv[])
 {
     char *rootRoot = getRoot(argv[0]);
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);
-
-    struct FileObject fo = new_FileObject("/Users/vladislavstupaev/Projects/Si-Major/public/index.html", 1);
-
-    char *data = getFileObjectData(&fo);
 
     // INIT FILES ENDPOINTS
     char *sep = "\n";
@@ -167,9 +114,6 @@ int main(int argc, char *argv[])
         printf("Error when reading file from endpoints.\n");
     }
 
-    /*  struct Endpoint endpoints[MAX_ENDPOINTS];
-    int endpointCount = 0; */
-
     struct EndpointObject _endpoints[MAX_ENDPOINTS];
     int _endpointCount = 0;
 
@@ -177,17 +121,11 @@ int main(int argc, char *argv[])
     {
         char *location = copyAndAppend(pathResources, strtok(NULL, sep));
         int isDynRead = str2int(strtok(NULL, sep));
-
         _endpoints[_endpointCount++] = new_EndpointObject(block, location, isDynRead);
-        //endpoints[endpointCount++] = new_Endpoint(block, location, isDynRead);
-
         block = strtok(NULL, sep);
     }
 
-    // END INIT FILES ENDPOINTS
-    printf("Readed [enpdpoints] file\n");
-
-    char httpHeader[8000] = RESPONSE_200;
+    printf("Endpoints file successfully readed\n");
 
     // Socket setup: creates an endpoint for communication, returns a descriptor
     int serverSocket = socket(
@@ -221,20 +159,9 @@ int main(int argc, char *argv[])
 
     report(&serverAddress); // Custom report function
 
-    //setHttpHeader(httpHeader, pathResources); // Custom function to set header
-
-    int clientSocket;
-
     // TODO: think about how to allocate memory more expediently
     char receiveDataBuffer[RECV_DATA_BUFFER_SIZE];
-
-    /*     for (int i = 0; i < endpointCount; i++)
-    {
-        endpoints[i].fileSize = getFileSize(endpoints[i].path);
-    } */
-
-    // Mb use multi threading ?
-    // https://stackoverflow.com/questions/2108961/sample-code-for-asynchronous-programming-in-c?lq=1
+    int clientSocket;
 
     // Wait for a connection, create a connected socket if a connection is pending
     while (1)
@@ -278,13 +205,10 @@ void *reqCallback(void *argument)
         pthread_exit(0);
     }
 
-    printf("Totat size = %d", totalSize);
-
     struct httpRequest req = new_httpRequest(receiveDataBuffer);
 
     printf("[ %d ]\t%s\t%s\n", clientSocket, getHttpMethodByEnum(req.method), req.uri);
 
-    // printf("%s", receiveDataBuffer);
     memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
 
     for (int i = 0; i < endpointCount; i++)
@@ -308,7 +232,6 @@ void *reqCallback(void *argument)
         }
     }
 
-    //send(clientSocket, httpHeader, sizeof(httpHeader), 0);
     close(clientSocket);
     pthread_exit(NULL);
 }
