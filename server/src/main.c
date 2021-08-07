@@ -14,19 +14,18 @@
 #include <pthread.h>
 
 #include "networking/httpRequest.h"
+#include "networking/httpResponse.h"
 #include "collections/dictionary.h"
-#include "file/file.h"
 #include "utils/utils.h"
+#include "file/file.h"
 #include "file/endpoint.h"
+#include "file/fileObject.h"
 
 #define RECV_DATA_BUFFER_SIZE 65536
 #define CHUNK_SIZE 512
 #define BACKLOG 50 // Passed to listen()
 #define PORT 8003
 #define MAX_ENDPOINTS 50
-
-#define RESPONSE_200 "HTTP/1.1 200 OK\r\n\n"
-#define RESPONSE_404 "HTTP/1.1 404 Not Found\r\n\n"
 
 void *reqCallback(void *argument);
 void report(struct sockaddr_in *serverAddress);
@@ -151,6 +150,14 @@ int main(int argc, char *argv[])
     char *rootRoot = getRoot(argv[0]);
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);
+
+    struct httpResponse kek = new_httpResponse();
+    char *text = build_httpResponse(&kek);
+
+    
+    struct FileObject fo = new_FileObject("/Users/vladislavstupaev/Projects/Si-Major/public/index.html", 1);
+
+    char *data = getFileObjectData(&fo);
 
     // INIT FILES ENDPOINTS
     struct Endpoint endpoints[MAX_ENDPOINTS];
