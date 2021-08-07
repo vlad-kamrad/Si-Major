@@ -5,6 +5,7 @@ A simple web server written in C
 ### TODO
 
 - Write MIME dict file
+- Investigate Content-Length header
 - Add dynamic header to response (text/css, text/html)
 - Investigate/Implement .env file
 - Add json parser

@@ -14,7 +14,7 @@ struct FileObject new_FileObject(char *location, int isDynamicLoad)
     instance.location = location;
     instance.size = getFileSize(location);
     instance.extension = _getExtension(location);
-    instance.data = !isDynamicLoad ? _readFileData(&instance) : malloc(0);
+    instance.data = !isDynamicLoad ? _readFileData(&instance) : NULL;
 
     return instance;
 }

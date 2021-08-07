@@ -34,7 +34,7 @@ int receiveBasic(int socket, char *receivedData);
 typedef struct parameter
 {
     int socket;
-    struct Endpoint *endpoints;
+    struct EndpointObject *endpoints;
     int endpointsCount;
 
 } parameter;
@@ -151,18 +151,11 @@ int main(int argc, char *argv[])
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);
 
-    struct httpResponse kek = new_httpResponse();
-    char *text = build_httpResponse(&kek);
-
-    
     struct FileObject fo = new_FileObject("/Users/vladislavstupaev/Projects/Si-Major/public/index.html", 1);
 
     char *data = getFileObjectData(&fo);
 
     // INIT FILES ENDPOINTS
-    struct Endpoint endpoints[MAX_ENDPOINTS];
-    int endpointCount = 0;
-
     char *sep = "\n";
     int isSuccess = 0;
     char *endpointsData = readFile(endpointsPath, getFileSize(endpointsPath), &isSuccess);
@@ -174,11 +167,20 @@ int main(int argc, char *argv[])
         printf("Error when reading file from endpoints.\n");
     }
 
+    /*  struct Endpoint endpoints[MAX_ENDPOINTS];
+    int endpointCount = 0; */
+
+    struct EndpointObject _endpoints[MAX_ENDPOINTS];
+    int _endpointCount = 0;
+
     while (block != NULL)
     {
-        char *filePath = copyAndAppend(pathResources, strtok(NULL, sep));
+        char *location = copyAndAppend(pathResources, strtok(NULL, sep));
         int isDynRead = str2int(strtok(NULL, sep));
-        endpoints[endpointCount++] = new_Endpoint(block, filePath, isDynRead);
+
+        _endpoints[_endpointCount++] = new_EndpointObject(block, location, isDynRead);
+        //endpoints[endpointCount++] = new_Endpoint(block, location, isDynRead);
+
         block = strtok(NULL, sep);
     }
 
@@ -226,10 +228,10 @@ int main(int argc, char *argv[])
     // TODO: think about how to allocate memory more expediently
     char receiveDataBuffer[RECV_DATA_BUFFER_SIZE];
 
-    for (int i = 0; i < endpointCount; i++)
+    /*     for (int i = 0; i < endpointCount; i++)
     {
         endpoints[i].fileSize = getFileSize(endpoints[i].path);
-    }
+    } */
 
     // Mb use multi threading ?
     // https://stackoverflow.com/questions/2108961/sample-code-for-asynchronous-programming-in-c?lq=1
@@ -239,10 +241,16 @@ int main(int argc, char *argv[])
     {
         clientSocket = accept(serverSocket, NULL, NULL);
 
+        if (clientSocket < 0)
+        {
+            printf("client socket < 0\n");
+            continue;
+        }
+
         parameter *p = malloc(sizeof(parameter));
         p->socket = clientSocket;
-        p->endpoints = endpoints;
-        p->endpointsCount = endpointCount;
+        p->endpoints = _endpoints;
+        p->endpointsCount = _endpointCount;
         pthread_t helper;
         void *status;
 
@@ -259,7 +267,7 @@ void *reqCallback(void *argument)
     parameter *p = (parameter *)argument;
     int clientSocket = p->socket;
     int endpointCount = p->endpointsCount;
-    struct Endpoint *endpoints = p->endpoints;
+    struct EndpointObject *endpoints = p->endpoints;
 
     int totalSize = receiveBasic(clientSocket, receiveDataBuffer);
 
@@ -270,6 +278,8 @@ void *reqCallback(void *argument)
         pthread_exit(0);
     }
 
+    printf("Totat size = %d", totalSize);
+
     struct httpRequest req = new_httpRequest(receiveDataBuffer);
 
     printf("[ %d ]\t%s\t%s\n", clientSocket, getHttpMethodByEnum(req.method), req.uri);
@@ -279,13 +289,15 @@ void *reqCallback(void *argument)
 
     for (int i = 0; i < endpointCount; i++)
     {
-        if (!strcmp(endpoints[i].endpointStr, req.uri) && req.method == GET)
+        if (!strcmp(endpoints[i].endpoint, req.uri) && req.method == GET)
         {
-            // TODO: Use cache
-            char *response = getFileByEndpoint(endpoints[i].path, endpoints[i].fileSize);
+            struct httpResponse resp = new_httpResponse(&endpoints[i].file);
+            char *output = build_httpResponse(&resp);
+            send(clientSocket, output, strlen(output), 0);
 
-            send(clientSocket, response, strlen(response), 0);
-            free(response);
+            // TODO: free dict resp
+            free(resp.body);
+            free(output);
             free(req.headers.items);
             break;
         }
