@@ -32,11 +32,11 @@ static void init_MIME_Types()
     dictAdd(&MIME_Types, "ico", "image/x-icon");
     dictAdd(&MIME_Types, "ics", "text/calendar");
     dictAdd(&MIME_Types, "jar", "application/java-archive");
-    dictAdd(&MIME_Types, "jpeg", ".jpg");
+    dictAdd(&MIME_Types, "jpeg", "image/jpeg");
+    dictAdd(&MIME_Types, "jpg", "image/jpeg");
     dictAdd(&MIME_Types, "js", "text/javascript");
     dictAdd(&MIME_Types, "json", "application/json");
     dictAdd(&MIME_Types, "jsonld", "application/ld+json");
-    dictAdd(&MIME_Types, "mid", ".midi");
     dictAdd(&MIME_Types, "mjs", "text/javascript");
     dictAdd(&MIME_Types, "mp3", "audio/mpeg");
     dictAdd(&MIME_Types, "mpeg", "video/mpeg");

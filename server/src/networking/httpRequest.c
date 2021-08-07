@@ -8,7 +8,7 @@ const char *httpDoubleDelimiter = "\r\n\r\n";
 const char *headerDelimiter = ": ";
 const char *space = " ";
 
-void parseFirstString(struct httpRequest *instance, char *firstString);
+void parseStatusLineString(struct httpRequest *instance, char *statusLine);
 void parseHeaders(struct httpRequest *instance, char *headers);
 
 struct httpRequest new_httpRequest(char *request)
@@ -19,8 +19,8 @@ struct httpRequest new_httpRequest(char *request)
     char *delimetedPointer = strstr(request, httpDelimiter);
 
     int position = delimetedPointer - request;
-    char *firstString = (char *)calloc(position, sizeof(char));
-    memmove(firstString, request, position);
+    char *statusLine = (char *)calloc(position, sizeof(char));
+    memmove(statusLine, request, position);
 
     delimetedPointer = delimetedPointer + strlen(httpDelimiter);
 
@@ -29,7 +29,7 @@ struct httpRequest new_httpRequest(char *request)
     char *headersString = (char *)calloc(headerPosition, sizeof(char));
     memmove(headersString, delimetedPointer, headerPosition);
 
-    parseFirstString(&instance, firstString);
+    parseStatusLineString(&instance, statusLine);
     parseHeaders(&instance, headersString);
 
     return instance;
@@ -53,9 +53,9 @@ void parseHeaders(struct httpRequest *instance, char *headersString)
     }
 }
 
-void parseFirstString(struct httpRequest *instance, char *firstString)
+void parseStatusLineString(struct httpRequest *instance, char *statusLine)
 {
-    char *block = strtok(firstString, space);
+    char *block = strtok(statusLine, space);
     instance->method = getHttpMethod(block);
     instance->uri = strtok(NULL, space);
     instance->httpVersion = strtok(NULL, space);

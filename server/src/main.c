@@ -98,6 +98,24 @@ char *getEndpointsPath(char *root)
 
 int main(int argc, char *argv[])
 {
+    // Points to the characters in string
+    char str[] = "Hel lo";
+    for (char *p = str; *p != 0; p++)
+    {
+        // printf("%c\n", *p);
+    }
+
+    /* 
+    char *loc = "path";
+    int fsize = 28177;
+    FILE *file = fopen(loc, "rb");
+    char *output = (char *)calloc(fsize, sizeof(char));
+    fread(output, sizeof(char), fsize, file);
+    fwrite(output, 1, fsize, stdout);
+    fclose(file);
+    return 0; 
+    */
+
     char *rootRoot = getRoot(argv[0]);
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);

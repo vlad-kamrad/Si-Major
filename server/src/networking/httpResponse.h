@@ -14,9 +14,10 @@
 
 struct httpResponse
 {
-    char *firstLine;
+    char *statusLine;
     struct Dictionary headers;
     char *body;
+    int bodySize;
 };
 
 struct httpResponse new_httpResponse(struct FileObject *fo);

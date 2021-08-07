@@ -4,9 +4,7 @@ A simple web server written in C
 
 ### TODO
 
-- Write MIME dict file
-- Investigate Content-Length header
-- Add dynamic header to response (text/css, text/html)
+- Sending images
 - Investigate/Implement .env file
 - Add json parser
 - Write 404 Page
@@ -27,3 +25,6 @@ A simple web server written in C
 - Implement multi route for get requests
 - Write config parser for configure multiple resources
 - Added base multithreading functionality
+- Write MIME dict file
+- Investigate Content-Length header
+- Add dynamic header to response (text/css, text/html)
