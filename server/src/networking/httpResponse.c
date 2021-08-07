@@ -26,8 +26,8 @@ char *build_httpResponse(struct httpResponse *instance)
 {
     // TODO: Change this !!!
     // Add first line
-    int approximateHeadersSize = instance->headers.count * 50;
-    char *out = (char *)calloc(strlen(instance->body) + approximateHeadersSize, sizeof(char));
+    // int approximateHeadersSize = instance->headers.count * 50;
+    char *out = (char *)calloc(10000, sizeof(char));
 
     strcat(out, instance->firstLine);
     strcat(out, newLineSeparator);
@@ -44,7 +44,7 @@ char *build_httpResponse(struct httpResponse *instance)
     if (instance->body == NULL)
         return out;
 
-    strcat(out, "\r\n");
+    strcat(out, "\n");
     strcat(out, instance->body);
 
     return out;

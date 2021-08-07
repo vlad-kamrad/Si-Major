@@ -220,9 +220,9 @@ void *reqCallback(void *argument)
             send(clientSocket, output, strlen(output), 0);
 
             // TODO: free dict resp
-            free(resp.body);
-            free(output);
-            free(req.headers.items);
+            // free(resp.body);
+            // free(output);
+            // free(req.headers.items);
             break;
         }
         else if (i == endpointCount - 1)
