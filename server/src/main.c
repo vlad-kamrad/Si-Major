@@ -235,7 +235,10 @@ void *reqCallback(void *argument)
         {
             struct httpResponse resp = new_httpResponse(&endpoints[i].file);
             char *output = build_httpResponse(&resp);
-            send(clientSocket, output, strlen(output), 0);
+
+            // send(clientSocket, output, strlen(output), 0);
+            write(clientSocket, output, sizeof(char[strlen(output)]));
+            write(clientSocket, resp.body, resp.bodySize);
 
             // TODO: free dict resp
             // free(resp.body);

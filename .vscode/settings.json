@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "fileobject.h": "c",
-        "__locale": "c",
-        "ios": "c"
-    }
-}

@@ -4,7 +4,6 @@ A simple web server written in C
 
 ### TODO
 
-- Sending images
 - Investigate/Implement .env file
 - Add json parser
 - Write 404 Page
@@ -28,3 +27,8 @@ A simple web server written in C
 - Write MIME dict file
 - Investigate Content-Length header
 - Add dynamic header to response (text/css, text/html)
+- Sending images
+
+### Use this command to clear a busy port
+
+```kill -9 $(lsof -i:8003 -t) 2> /dev/null```
