@@ -205,6 +205,19 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+struct EndpointObject *getRoute(char *uri, struct EndpointObject *endpoints, int endpointCount)
+{
+    for (int i = 0; i <= endpointCount; i++)
+    {
+        if (!strcmp(endpoints[i].endpoint, uri))
+        {
+            return &endpoints[i];
+        }
+    }
+
+    return NULL;
+}
+
 void *reqCallback(void *argument)
 {
     char receiveDataBuffer[RECV_DATA_BUFFER_SIZE];
@@ -229,29 +242,26 @@ void *reqCallback(void *argument)
 
     memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
 
-    for (int i = 0; i < endpointCount; i++)
+    struct EndpointObject *end = getRoute(req.uri, endpoints, endpointCount);
+
+    if (end == NULL)
     {
-        if (!strcmp(endpoints[i].endpoint, req.uri) && req.method == GET)
-        {
-            struct httpResponse resp = new_httpResponse(&endpoints[i].file);
-            char *output = build_httpResponse(&resp);
-
-            // send(clientSocket, output, strlen(output), 0);
-            write(clientSocket, output, sizeof(char[strlen(output)]));
-            write(clientSocket, resp.body, resp.bodySize);
-
-            // TODO: free dict resp
-            // free(resp.body);
-            // free(output);
-            // free(req.headers.items);
-            break;
-        }
-        else if (i == endpointCount - 1)
-        {
-            printf("[ Not Found]\n");
-            send(clientSocket, RESPONSE_404, strlen(RESPONSE_404), 0);
-        }
+        // TODO: Use Not Found Start line
+        printf("[ Not Found]\n");
+        end = getRoute("/404", endpoints, endpointCount);
     }
+
+    struct httpResponse resp = new_httpResponse(&end->file);
+    char *output = build_httpResponse(&resp);
+
+    // send(clientSocket, output, strlen(output), 0);
+    write(clientSocket, output, sizeof(char[strlen(output)]));
+    write(clientSocket, resp.body, resp.bodySize);
+
+    // TODO: free dict resp
+    // free(resp.body);
+    // free(output);
+    // free(req.headers.items);
 
     close(clientSocket);
     pthread_exit(NULL);

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Not Found</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        color: #fff;
+      }
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        animation: blinking 8s ease-in-out infinite;
+      }
+      h1 {
+        font-size: 80vw;
+        position: absolute;
+        transform: rotate(345deg);
+        user-select: none;
+      }
+      span {
+        position: absolute;
+        width: 25%;
+        bottom: 10px;
+        right: 10px;
+        font-size: 3.5vw;
+        text-align: right;
+      }
+      @keyframes blinking {
+        0% {
+          color: #fff;
+        }
+        50% {
+          color: #3a3a3a;
+        }
+        100% {
+          color: #fff;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>404</h1>
+      <span>The page you're looking for does not exist.</span>
+    </div>
+  </body>
+</html>
