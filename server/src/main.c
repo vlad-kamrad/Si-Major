@@ -202,7 +202,7 @@ struct EndpointObject *getRoute(char *uri, struct EndpointObject *endpoints, int
 
 int getRouteIndex(char *uri, struct EndpointObject *endpoints, int endpointCount)
 {
-    for (int i = 0; i <= endpointCount; i++)
+    for (int i = 0; i < endpointCount; i++)
         if (!strcmp(endpoints[i].endpoint, uri))
             return i;
 
@@ -231,7 +231,7 @@ void *reqCallback(void *argument)
 
     printf("[ %d ]\t%s\t%s\n", clientSocket, getHttpMethodByEnum(req.method), req.uri);
 
-    memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
+    // memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
 
     int routeIndex = getRouteIndex(req.uri, endpoints, endpointCount);
     // struct EndpointObject *end = getRoute(req.uri, endpoints, endpointCount);
@@ -240,7 +240,7 @@ void *reqCallback(void *argument)
     {
         // TODO: Use Not Found Start line
         printf("[ Not Found]\n");
-        routeIndex = getRouteIndex("/nfp", endpoints, endpointCount);
+        routeIndex = getRouteIndex("/nfp\0", endpoints, endpointCount);
         isNF = 1;
     }
 
