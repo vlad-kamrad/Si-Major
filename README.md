@@ -6,7 +6,6 @@ A simple web server written in C
 
 - Investigate/Implement .env file
 - Add json parser
-- Write 404 Page
 - Check with load testing
 - Implement POST requests (pre web api)
 - Investigate cache functionality
@@ -28,6 +27,7 @@ A simple web server written in C
 - Investigate Content-Length header
 - Add dynamic header to response (text/css, text/html)
 - Sending images
+- Write 404 Page
 
 ### Use this command to clear a busy port
 
