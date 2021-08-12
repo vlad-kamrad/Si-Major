@@ -2,6 +2,8 @@
 #include <string.h>
 #include "dictionary.h"
 
+static void _relocateMemory(struct Dictionary *instance, int newCountItems);
+
 struct Dictionary new_Dictionary()
 {
     struct Dictionary instance;
@@ -17,14 +19,9 @@ void free_Dictionary(struct Dictionary *instance)
     // TODO: Implement this
 }
 
-void relocateMemory(struct Dictionary *instance, int newCountItems)
-{
-    instance->items = realloc(instance->items, newCountItems * sizeof(struct DictionaryItem));
-}
-
 void dictAddItem(struct Dictionary *instance, struct DictionaryItem item)
 {
-    relocateMemory(instance, instance->count + 1);
+    _relocateMemory(instance, instance->count + 1);
     instance->items[instance->count] = item;
     instance->count++;
 }
@@ -53,4 +50,9 @@ char *dictGet(struct Dictionary *instance, char *key)
 void dictRemove(struct Dictionary *instance, char *key)
 {
     // TODO: Implement this
+}
+
+static void _relocateMemory(struct Dictionary *instance, int newCountItems)
+{
+    instance->items = realloc(instance->items, newCountItems * sizeof(struct DictionaryItem));
 }

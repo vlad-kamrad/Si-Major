@@ -8,8 +8,8 @@ const char *httpDoubleDelimiter = "\r\n\r\n";
 const char *headerDelimiter = ": ";
 const char *space = " ";
 
-void parseStatusLineString(struct httpRequest *instance, char *statusLine);
-void parseHeaders(struct httpRequest *instance, char *headers);
+static void _parseStatusLineString(struct httpRequest *instance, char *statusLine);
+static void _parseHeaders(struct httpRequest *instance, char *headers);
 
 struct httpRequest new_httpRequest(char *request)
 {
@@ -29,13 +29,27 @@ struct httpRequest new_httpRequest(char *request)
     char *headersString = (char *)calloc(headerPosition, sizeof(char));
     memmove(headersString, delimetedPointer, headerPosition);
 
-    parseStatusLineString(&instance, statusLine);
-    parseHeaders(&instance, headersString);
+    _parseStatusLineString(&instance, statusLine);
+    _parseHeaders(&instance, headersString);
 
     return instance;
 }
 
-void parseHeaders(struct httpRequest *instance, char *headersString)
+enum httpMethods getHttpMethod(char *methodString)
+{
+    for (unsigned short i = 0; i < 9; i++)
+        if (!strcmp(methodString, methods[i]))
+            return i;
+
+    return GET;
+}
+
+const char *getHttpMethodByEnum(enum httpMethods method)
+{
+    return methods[method];
+}
+
+static void _parseHeaders(struct httpRequest *instance, char *headersString)
 {
     char *block = strtok(headersString, httpDelimiter);
     int delimiterSize = strlen(headerDelimiter);
@@ -53,24 +67,10 @@ void parseHeaders(struct httpRequest *instance, char *headersString)
     }
 }
 
-void parseStatusLineString(struct httpRequest *instance, char *statusLine)
+static void _parseStatusLineString(struct httpRequest *instance, char *statusLine)
 {
     char *block = strtok(statusLine, space);
     instance->method = getHttpMethod(block);
     instance->uri = strtok(NULL, space);
     instance->httpVersion = strtok(NULL, space);
-}
-
-enum httpMethods getHttpMethod(char *methodString)
-{
-    for (unsigned short i = 0; i < 9; i++)
-        if (!strcmp(methodString, methods[i]))
-            return i;
-
-    return GET;
-}
-
-const char *getHttpMethodByEnum(enum httpMethods method)
-{
-    return methods[method];
 }

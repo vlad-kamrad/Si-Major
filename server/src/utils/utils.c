@@ -33,13 +33,3 @@ int getPairIndex(char *source, int index, char first, char second)
 
     return index;
 }
-
-struct FileMetadata new_FileMetadata()
-{
-    struct FileMetadata instance;
-
-    instance.size = 0;
-    instance.location = NULL;
-
-    return instance;
-}

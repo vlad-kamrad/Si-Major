@@ -98,24 +98,6 @@ char *getEndpointsPath(char *root)
 
 int main(int argc, char *argv[])
 {
-    // Points to the characters in string
-    char str[] = "Hel lo";
-    for (char *p = str; *p != 0; p++)
-    {
-        // printf("%c\n", *p);
-    }
-
-    /* 
-    char *loc = "path";
-    int fsize = 28177;
-    FILE *file = fopen(loc, "rb");
-    char *output = (char *)calloc(fsize, sizeof(char));
-    fread(output, sizeof(char), fsize, file);
-    fwrite(output, 1, fsize, stdout);
-    fclose(file);
-    return 0; 
-    */
-
     char *rootRoot = getRoot(argv[0]);
     char *endpointsPath = getEndpointsPath(rootRoot);
     char *pathResources = getPublicPath(argv[0]);
@@ -130,6 +112,7 @@ int main(int argc, char *argv[])
     {
         // TODO: Write more
         printf("Error when reading file from endpoints.\n");
+        return 1;
     }
 
     struct EndpointObject _endpoints[MAX_ENDPOINTS];
@@ -192,12 +175,11 @@ int main(int argc, char *argv[])
             continue;
         }
 
+        pthread_t helper;
         parameter *p = malloc(sizeof(parameter));
         p->socket = clientSocket;
         p->endpoints = _endpoints;
         p->endpointsCount = _endpointCount;
-        pthread_t helper;
-        void *status;
 
         pthread_create(&helper, NULL, reqCallback, p);
     }
