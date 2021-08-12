@@ -4,6 +4,7 @@ A simple web server written in C
 
 ### TODO
 
+- SSL/TLS
 - Investigate/Implement .env file
 - Add json parser
 - Check with load testing
