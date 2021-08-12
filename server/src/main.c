@@ -187,19 +187,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-struct EndpointObject *getRoute(char *uri, struct EndpointObject *endpoints, int endpointCount)
-{
-    for (int i = 0; i <= endpointCount; i++)
-    {
-        if (!strcmp(endpoints[i].endpoint, uri))
-        {
-            return &endpoints[i];
-        }
-    }
-
-    return NULL;
-}
-
 int getRouteIndex(char *uri, struct EndpointObject *endpoints, int endpointCount)
 {
     for (int i = 0; i < endpointCount; i++)
@@ -231,26 +218,20 @@ void *reqCallback(void *argument)
 
     printf("[ %d ]\t%s\t%s\n", clientSocket, getHttpMethodByEnum(req.method), req.uri);
 
-    // memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
+    memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
 
     int routeIndex = getRouteIndex(req.uri, endpoints, endpointCount);
-    // struct EndpointObject *end = getRoute(req.uri, endpoints, endpointCount);
+
     int isNF = 0;
     if (routeIndex < 0)
     {
-        // TODO: Use Not Found Start line
         printf("[ Not Found]\n");
-        routeIndex = getRouteIndex("/nfp\0", endpoints, endpointCount);
+        routeIndex = getRouteIndex("/nfp", endpoints, endpointCount);
         isNF = 1;
     }
 
-    if (routeIndex < 0)
-    {
-        printf("[ ERROR ]\n");
-    }
-
     struct httpResponse resp = new_httpResponse(&endpoints[routeIndex].file);
-    printf("[[ is Not Found = %d ]]\n", isNF);
+
     if (isNF)
     {
         resp.statusLine = RESPONSE_404;

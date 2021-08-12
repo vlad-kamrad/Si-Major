@@ -4,6 +4,7 @@ A simple web server written in C
 
 ### TODO
 
+- Implement route system
 - SSL/TLS
 - Investigate/Implement .env file
 - Add json parser
