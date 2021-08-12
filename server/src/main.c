@@ -230,12 +230,12 @@ void *reqCallback(void *argument)
     {
         // TODO: Use Not Found Start line
         printf("[ Not Found]\n");
-        end = getRoute("/404", endpoints, endpointCount);
+        end = getRoute("/nfp", endpoints, endpointCount);
         isNF = 1;
     }
 
     struct httpResponse resp = new_httpResponse(&end->file);
-
+    printf("[[ is Not Found = %d ]]\n", isNF);
     if (isNF) {
         resp.statusLine = RESPONSE_404;
     }
