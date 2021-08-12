@@ -225,15 +225,21 @@ void *reqCallback(void *argument)
     memset(receiveDataBuffer, 0, RECV_DATA_BUFFER_SIZE);
 
     struct EndpointObject *end = getRoute(req.uri, endpoints, endpointCount);
-
+    int isNF = 0;
     if (end == NULL)
     {
         // TODO: Use Not Found Start line
         printf("[ Not Found]\n");
         end = getRoute("/404", endpoints, endpointCount);
+        isNF = 1;
     }
 
     struct httpResponse resp = new_httpResponse(&end->file);
+
+    if (isNF) {
+        resp.statusLine = RESPONSE_404;
+    }
+
     char *output = build_httpResponse(&resp);
 
     // send(clientSocket, output, strlen(output), 0);
