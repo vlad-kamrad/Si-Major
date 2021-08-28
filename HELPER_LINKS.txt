@@ -17,3 +17,5 @@ http://ccfit.nsu.ru/~fat/pthreads/816-5137.pdf
 https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 
 https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+
+https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_C_libraries.html
